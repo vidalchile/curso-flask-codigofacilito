@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title >USUARIO HTML</title>
+</head>
+<body>
+    <h2>Hola usuario: {{ nombre_usuario }}, Edad: {{ edad_usuario }}</h2>
+
+    {% if edad_usuario > 18  %}
+    <p>Es mayor de edad</p>
+    {% else %}
+    <p>No es mayor de edad</p>
+    {% endif %}
+
+    <!-- Iterar una arreglo -->
+    {% for item in lista %}
+        <p>{{ item }}</p>
+    {% endfor %}
+    
+</body>
+</html>

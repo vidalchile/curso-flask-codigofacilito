@@ -1,0 +1,11 @@
+<!--Renderizar plantilla base-->
+{% extends 'base/base.html' %}
+
+<!--Renderizar contenido clientes-->
+<!--Iterar clietes-->
+{% block content %}
+    {% for nombre_cliente in nombres_clientes %}
+        <p>{{ nombre_cliente }}</p>
+    {% endfor %}
+    <p>ESTO VIENE DESDE LA VISTA DE CLIENTES</p>
+{% endblock %}
