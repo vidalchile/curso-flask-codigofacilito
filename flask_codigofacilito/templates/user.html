@@ -1,20 +1,16 @@
-<html>
-<head>
-    <title >USUARIO HTML</title>
-</head>
-<body>
-    <h2>Hola usuario: {{ nombre_usuario }}, Edad: {{ edad_usuario }}</h2>
+<!-- Renderizar plantilla base -->
+{% extends 'base/base.html' %}
 
-    {% if edad_usuario > 18  %}
-    <p>Es mayor de edad</p>
-    {% else %}
-    <p>No es mayor de edad</p>
-    {% endif %}
+<!--Titulo de la pagina-->
+{% block title %}
+    PAGINA USUARIO
+{% endblock %}
 
-    <!-- Iterar una arreglo -->
-    {% for item in lista %}
-        <p>{{ item }}</p>
-    {% endfor %}
-    
-</body>
-</html>
+<!--Renderizar contenido usuario-->
+{% block content %}
+    <div class="card text-white bg-secondary my-5 py-4 text-center">
+    <div class="card-body">
+        <p>El nombre de usuario es: {{nombre}}</p>
+    </div>
+    </div>
+{% endblock %}
