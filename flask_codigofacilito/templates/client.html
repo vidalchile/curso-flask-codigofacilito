@@ -6,6 +6,9 @@
     PAGINA CLIENTE
 {% endblock %}
 
+<!-- Importar macro para crear un boton -->
+{% from 'base/_macro.html' import show_button  %}
+
 <!--Renderizar contenido clientes-->
 <!--Iterar clietes-->
 {% block content %}
@@ -17,7 +20,7 @@
                 <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem magni quas ex numquam, maxime minus quam molestias corporis quod, ea minima accusamus.</p>
               </div>
               <div class="card-footer">
-                <a href="#" class="btn btn-primary btn-sm">More Info</a>
+                {{ show_button('#', 'btn btn-primary btn-sm', 'Mas informacion') }}
               </div>
             </div>
         </div>
