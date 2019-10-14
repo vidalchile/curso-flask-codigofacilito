@@ -1,8 +1,16 @@
 <!-- Renderizar plantilla base -->
 {% extends 'base/base.html' %}
 
+<!--Titulo de la pagina-->
+{% block title %}
+    PAGINA USUARIO
+{% endblock %}
+
 <!--Renderizar contenido usuario-->
 {% block content %}
-    <p>El nombre de usuario es: {{nombre}}</p>
-    <p>ESTO VIENE DESDE LA VISTA INDEX.HTML</p>
+    <div class="card text-white bg-secondary my-5 py-4 text-center">
+    <div class="card-body">
+        <p>El nombre de usuario es: {{nombre}}</p>
+    </div>
+    </div>
 {% endblock %}

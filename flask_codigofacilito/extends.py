@@ -13,7 +13,7 @@ def index():
 
 @app.route('/client')
 def client():
-    nombres = ['cliente 1', 'cliete 2', 'cliente 3']
+    nombres = ['cliente 1', 'cliete 2', 'cliente 3', 'cliente 4']
     return render_template('client.html', nombres_clientes = nombres)
 
 if __name__ == '__main__':
