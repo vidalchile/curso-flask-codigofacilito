@@ -1,0 +1,32 @@
+<!--Renderizar plantilla base-->
+{% extends 'base/base.html' %}
+
+<!--Titulo de la pagina-->
+{% block title %} {{title}} {% endblock %}
+
+<!-- activar menu de nevegacion -->
+{% block active_form %} active {% endblock %}
+
+<!-- Importar macro para crear un boton -->
+{% from 'base/_macro.html' import render_field  %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-12">
+        <br>
+        <form>
+            <div class="form-group">
+                {{ render_field(form.username, class='form-control') }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.email, class='form-control') }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.comment, class='form-control') }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <br>
+    </div>
+</div>
+{% endblock %}

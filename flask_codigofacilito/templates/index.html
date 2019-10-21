@@ -2,6 +2,32 @@
 {% extends 'base/base.html' %}
 
 <!--Titulo de la pagina-->
-{% block title %}
-    Pagina de inicio
+{% block title %} Pagina de inicio {% endblock %}
+
+<!-- activar menu de nevegacion -->
+{% block active_home %} active {% endblock %}
+
+{% block home %}
+      <!-- Page Content -->
+      <div class="container">
+        <!-- Heading Row -->
+        <div class="row align-items-center my-5">
+           <div class="col-lg-7">
+              <img width="308" class="img-fluid rounded mb-4 mb-lg-0" src="{{ url_for('static', filename='img/logo-flask.png') }}" alt="">
+           </div>
+           <!-- /.col-lg-8 -->
+           <div class="col-lg-5">
+              <h1 class="font-weight-light">Titulo Home</h1>
+              <p>Descripcion Home!</p>
+              <p>Descripcion Home!</p>
+              <p>Descripcion Home!</p>
+              <p>Descripcion Home!</p>
+              <p>Descripcion Home!</p>
+              {{ show_button('#', 'btn btn-primary', 'Accion Home!') }}
+           </div>
+           <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->       
+     </div>
+
 {% endblock %}
