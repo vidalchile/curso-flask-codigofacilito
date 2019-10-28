@@ -15,13 +15,13 @@ class LoginForm(Form):
         validators.Required(),
         validators.Length(min=4, max=25, message='Ingrese un username valido!')
     ])
-
+    
     password = PasswordField('Contraseña', [
         validators.Required(),
-        validators.EqualTo('confirm', message='Passwords no coincide')
+        #validators.EqualTo('confirm', message='Passwords no coincide')
     ])
 
-    confirm = PasswordField('Repetir contraseña')
+    #confirm = PasswordField('Repetir contraseña')
 
 class CommentForm(Form):
     

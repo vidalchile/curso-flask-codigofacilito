@@ -5,6 +5,9 @@ from flask import render_template
 from flask import request
 from flask_wtf.csrf import CSRFProtect
 from flask import make_response
+from flask import session
+from flask import redirect
+from flask import url_for
 import forms
 
 # SERVICIO WEB
@@ -24,8 +27,13 @@ csrf = CSRFProtect(app)
 
 @app.route('/')
 def index():
+
+    if 'username' in session:
+        username = session['username']
+        print('Valor Session: {}'.format(username))
+    
     custom_cookie = request.cookies.get('custom_cookie')
-    print(custom_cookie)
+    print('Valor Cookie: {}'.format(custom_cookie))
     return render_template('index.html')
  
 @app.route('/usuario')
@@ -41,13 +49,19 @@ def clientes():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     formulario_login = forms.LoginForm(request.form)
-    
     if request.method == 'POST' and formulario_login.validate():
+        session['username'] = formulario_login.username.data
         print(formulario_login.username.data)
         print(formulario_login.password.data)
 
     titulo = 'Login'
     return render_template('login.html', title=titulo, form = formulario_login)
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    if 'username' in session:
+        session.pop('username')
+    return redirect(url_for('login'))
 
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
