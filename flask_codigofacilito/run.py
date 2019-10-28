@@ -8,6 +8,7 @@ from flask import make_response
 from flask import session
 from flask import redirect
 from flask import url_for
+from flask import flash
 import forms
 
 # SERVICIO WEB
@@ -20,6 +21,8 @@ import forms
 # VALIDACIONES PROPIAS, CAMPOS HIDDEN
 # CSRF Protection
 # Cookies
+# Session
+# Flashed messages
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key' # Identificador unico
@@ -50,8 +53,11 @@ def clientes():
 def login():
     formulario_login = forms.LoginForm(request.form)
     if request.method == 'POST' and formulario_login.validate():
-        session['username'] = formulario_login.username.data
-        print(formulario_login.username.data)
+        username = formulario_login.username.data
+        session['username'] = username
+        success_message = 'Bienvenido {}'.format(username)
+        flash(success_message)
+        print(username)
         print(formulario_login.password.data)
 
     titulo = 'Login'

@@ -47,6 +47,19 @@
             </div>
          </nav>
 
+         {% with messages = get_flashed_messages() %}
+            {% if messages %}
+               <br>
+               <div class="row">
+                  <div class="alert alert-primary col-md-12 col-md-offset-12" align="center">
+                        {% for message in messages %}
+                           {{message}}
+                        {% endfor %}
+                     </div>
+               </div>
+            {% endif %}
+         {% endwith %}
+
          <div class="row">
             {% block home %}
             {% endblock %}
