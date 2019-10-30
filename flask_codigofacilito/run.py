@@ -23,10 +23,15 @@ import forms
 # Cookies
 # Session
 # Flashed messages
+# Control error 404
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key' # Identificador unico
 csrf = CSRFProtect(app)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error_404.html'), 404
 
 @app.route('/')
 def index():
