@@ -10,6 +10,7 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 import forms
+import json
 
 # SERVICIO WEB
 # RUTAS Y PARAMATROS
@@ -24,6 +25,7 @@ import forms
 # Session
 # Flashed messages
 # Control error 404
+# AJAX
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key' # Identificador unico
@@ -91,6 +93,13 @@ def cookie():
     response = make_response(render_template('cookie.html'))
     response.set_cookie('custom_cookie', 'Cristian Vidal')
     return response
+
+@app.route('/ajax-login', methods=['POST'])
+def ajax_login():
+    # por ahora vamos a simular que el usuario se va a regirstrar
+    username = request.form['username']
+    response = {'status':200, 'username':username, 'id':'1'}
+    return json.dumps(response), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
