@@ -10,6 +10,7 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 from flask import g
+from  config import DevelopmentConfig
 import forms
 import json
 
@@ -29,10 +30,11 @@ import json
 # AJAX
 # Before request / after request
 # Variables globales
+# Configuraciones
 
 app = Flask(__name__)
-app.secret_key = 'my_secret_key' # Identificador unico
-csrf = CSRFProtect(app)
+app.config.from_object(DevelopmentConfig)
+csrf = CSRFProtect()
 
 @app.before_request
 def before_request():
@@ -120,4 +122,5 @@ def ajax_login():
     return json.dumps(response), 200
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    csrf.init_app(app)
+    app.run(port=8000)
