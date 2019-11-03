@@ -9,6 +9,7 @@ from flask import session
 from flask import redirect
 from flask import url_for
 from flask import flash
+from flask import g
 import forms
 import json
 
@@ -27,6 +28,7 @@ import json
 # Control error 404
 # AJAX
 # Before request / after request
+# Variables globales
 
 app = Flask(__name__)
 app.secret_key = 'my_secret_key' # Identificador unico
@@ -34,14 +36,15 @@ csrf = CSRFProtect(app)
 
 @app.before_request
 def before_request():
-    print('1')
+    
+    g.mi_variable_global = 'variable global 1'
+
     if 'username' not in session:        
         print(request.endpoint) # url peticion
         print('El usuario necesita login')
 
 @app.after_request
 def after_request(response):
-    print('3')
     return response
 
 @app.errorhandler(404)
@@ -50,7 +53,9 @@ def page_not_found(e):
 
 @app.route('/')
 def index():
-    print('2')
+    
+    print(g.mi_variable_global)
+
     if 'username' in session:
         username = session['username']
         print('Valor Session: {}'.format(username))
