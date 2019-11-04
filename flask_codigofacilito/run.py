@@ -11,6 +11,8 @@ from flask import url_for
 from flask import flash
 from flask import g
 from  config import DevelopmentConfig
+from models import db
+from models import User
 import forms
 import json
 
@@ -31,6 +33,7 @@ import json
 # Before request / after request
 # Variables globales
 # Configuraciones
+# Coneccion base de datos, creacion de modelos, SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -122,5 +125,11 @@ def ajax_login():
     return json.dumps(response), 200
 
 if __name__ == '__main__':
+
     csrf.init_app(app)
+    
+    db.init_app(app) # Obtiene todas las conf. de la DB
+    with app.app_context():
+        db.create_all() # si existe la tabla no las creara
+    
     app.run(port=8000)
