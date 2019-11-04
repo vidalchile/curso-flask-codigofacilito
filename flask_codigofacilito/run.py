@@ -33,7 +33,8 @@ import json
 # Before request / after request
 # Variables globales
 # Configuraciones
-# Coneccion base de datos, creacion de modelos, SQLAlchemy
+# Coneccion base de datos, creacion de modelos, ORM SQLAlchemy
+# Crear registros
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -123,6 +124,29 @@ def ajax_login():
     username = request.form['username']
     response = {'status':200, 'username':username, 'id':'1'}
     return json.dumps(response), 200
+
+@app.route('/create-user', methods=['GET', 'POST'])
+def crear_usuario():
+    
+    create_form = forms.CreateUserForm(request.form)
+    
+    if form_is_valid(request.method, create_form):
+        username = create_form.username.data
+        password = create_form.password.data
+        email = create_form.email.data
+        user = User(username = username, password = password, email = email)
+        db.session.add(user)
+        db.session.commit()
+        success_message = 'Usuario registrado en la base de datos'
+        flash(success_message)
+
+    titulo = 'Crear Usuario'
+    return render_template('create_user.html', title=titulo, form = create_form)
+
+def form_is_valid(method, form):
+    if method == 'POST' and form.validate():
+        return True
+    return False
 
 if __name__ == '__main__':
 
