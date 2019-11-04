@@ -15,6 +15,7 @@ from models import db
 from models import User
 import forms
 import json
+from werkzeug.security import generate_password_hash
 
 # SERVICIO WEB
 # RUTAS Y PARAMATROS
@@ -34,7 +35,7 @@ import json
 # Variables globales
 # Configuraciones
 # Coneccion base de datos, creacion de modelos, ORM SQLAlchemy
-# Crear registros
+# Ingresar registros en la base de datos
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -82,16 +83,25 @@ def clientes():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    formulario_login = forms.LoginForm(request.form)
-    if request.method == 'POST' and formulario_login.validate():
-        username = formulario_login.username.data
-        session['username'] = username
-        success_message = 'Bienvenido {}'.format(username)
-        flash(success_message)
-        print(username)
-        print(formulario_login.password.data)
 
-    titulo = 'Login'
+    formulario_login = forms.LoginForm(request.form)
+    
+    if form_is_valid(request.method, formulario_login):
+        
+        username = formulario_login.username.data
+        password = formulario_login.password.data
+        user = User.query.filter_by(username = username).first()
+
+        if user is not None and user.verify_password(password):
+            success_message = 'Bienvenido {}'.format(username)
+            flash(success_message)
+            session['username'] = username
+            return redirect( url_for('index') )
+        
+        error_message = 'Usuario o contraseña incorrectas'
+        flash(error_message)
+
+    titulo = 'Iniciar sesion'
     return render_template('login.html', title=titulo, form = formulario_login)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -132,7 +142,7 @@ def crear_usuario():
     
     if form_is_valid(request.method, create_form):
         username = create_form.username.data
-        password = create_form.password.data
+        password = generate_password_hash(create_form.password.data)
         email = create_form.email.data
         user = User(username = username, password = password, email = email)
         db.session.add(user)
