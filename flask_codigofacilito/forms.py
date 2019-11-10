@@ -1,6 +1,7 @@
 from wtforms import Form, BooleanField, StringField, TextField, PasswordField, validators
 from wtforms.fields.html5 import EmailField
 from wtforms import HiddenField
+from models import User
 
 # Validaciones propias
 def length_honeypot(form, field):
@@ -39,6 +40,13 @@ class CreateUserForm(Form):
         validators.Required(),
         validators.Email(message='Ingrese un email valido!')
     ])
+
+    # Sobreescribiendo metodo
+    def validate_username(form, field):
+        username = field.data
+        user = User.query.filter_by(username = username).first()
+        if user is not None:
+            raise validators.ValidationError('El username {} ya se encuentra registrado!'.format(username))
 
 class CommentForm(Form):
     

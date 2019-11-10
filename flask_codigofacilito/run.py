@@ -36,6 +36,7 @@ from werkzeug.security import generate_password_hash
 # Configuraciones
 # Coneccion base de datos, creacion de modelos, ORM SQLAlchemy
 # Ingresar registros en la base de datos
+# Form method override (Ejemplo: validar nombre de usuario único)
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
