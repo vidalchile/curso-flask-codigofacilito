@@ -13,9 +13,9 @@ from flask import g
 from  config import DevelopmentConfig
 from models import db
 from models import User
+from models import Comment
 import forms
 import json
-from werkzeug.security import generate_password_hash
 
 # SERVICIO WEB
 # RUTAS Y PARAMATROS
@@ -37,6 +37,7 @@ from werkzeug.security import generate_password_hash
 # Coneccion base de datos, creacion de modelos, ORM SQLAlchemy
 # Ingresar registros en la base de datos
 # Form method override (Ejemplo: validar nombre de usuario único)
+# Uno a muchos base de datos
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -44,7 +45,6 @@ csrf = CSRFProtect()
 
 @app.before_request
 def before_request():
-    
     g.mi_variable_global = 'variable global 1'
 
     if 'username' not in session:        
@@ -60,8 +60,7 @@ def page_not_found(e):
     return render_template('error_404.html'), 404
 
 @app.route('/')
-def index():
-    
+def index(): 
     print(g.mi_variable_global)
 
     if 'username' in session:
@@ -84,11 +83,9 @@ def clientes():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     formulario_login = forms.LoginForm(request.form)
-    
+
     if form_is_valid(request.method, formulario_login):
-        
         username = formulario_login.username.data
         password = formulario_login.password.data
         user = User.query.filter_by(username = username).first()
@@ -97,6 +94,7 @@ def login():
             success_message = 'Bienvenido {}'.format(username)
             flash(success_message)
             session['username'] = username
+            session['user_id'] = user.id
             return redirect( url_for('index') )
         
         error_message = 'Usuario o contraseña incorrectas'
@@ -113,15 +111,22 @@ def logout():
 
 @app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
-    formulario = forms.CommentForm(request.form)
+    comment_form = forms.CommentForm(request.form)
     
-    if request.method == 'POST' and formulario.validate():
-        print(formulario.username.data)
-        print(formulario.email.data)
-        print(formulario.comment.data)
+    if request.method == 'POST' and comment_form.validate():
+        
+        # Validar user id
+        user_id = session['user_id']
 
-    titulo = 'Formulario'
-    return render_template('formulario.html', title=titulo, form = formulario)
+        comment = comment_form.comment.data
+        comment = Comment(user_id = user_id, text=comment)
+        db.session.add(comment)
+        db.session.commit()
+        success_message = 'Comentario ingresado correctamente'
+        flash(success_message)
+
+    titulo = 'Comentarios'
+    return render_template('formulario.html', title=titulo, form = comment_form)
 
 @app.route('/cookie')
 def cookie():
@@ -143,7 +148,7 @@ def crear_usuario():
     
     if form_is_valid(request.method, create_form):
         username = create_form.username.data
-        password = generate_password_hash(create_form.password.data)
+        password = create_form.password.data
         email = create_form.email.data
         user = User(username = username, password = password, email = email)
         db.session.add(user)

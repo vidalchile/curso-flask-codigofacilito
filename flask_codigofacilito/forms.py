@@ -49,19 +49,5 @@ class CreateUserForm(Form):
             raise validators.ValidationError('El username {} ya se encuentra registrado!'.format(username))
 
 class CommentForm(Form):
-    
-    username = StringField('username', 
-    [
-        validators.Required(),
-        validators.Length(min=4, max=25, message='Ingrese un username valido!')
-    ])
-
-    email = EmailField('Correo electronico',
-    [
-        validators.Required(),
-        validators.Email(message='Ingrese un email valido!')
-    ])
-
     comment = TextField('Comentario')
-
     honeypot = HiddenField('', [length_honeypot])
