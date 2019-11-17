@@ -13,7 +13,7 @@
   {% if comentarios %}
     <ul class="list-group">
     {% for comentario in comentarios.items %}
-      <li class="list-group-item"><b>{{comentario.username}}</b> {{comentario.text}}</li>
+      <li class="list-group-item"><b>{{comentario.username}}</b> {{comentario.text}} {{date_format(comentario.created_date)}}</li>
     {% endfor %}
     </ul>
   {% endif %}

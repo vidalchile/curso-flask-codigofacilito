@@ -14,6 +14,7 @@ from  config import DevelopmentConfig
 from models import db
 from models import User
 from models import Comment
+from helpers import date_format
 import forms
 import json
 
@@ -39,6 +40,7 @@ import json
 # Form method override (Ejemplo: validar nombre de usuario único)
 # Uno a muchos base de datos
 # Paginación
+# Helpers
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -187,7 +189,9 @@ def comentarios(page=1):
     
     comentarios = Comment.query.join(User).add_columns( 
         User.username,
-        Comment.text )
+        Comment.text,
+        Comment.created_date
+    )
     
     cantidad_paginas = obtener_cantidad_paginas(comentarios.count())
 
@@ -208,7 +212,8 @@ def comentarios(page=1):
                             comentarios=comentarios_paginados,
                             cantidad_paginas=cantidad_paginas,
                             next_page=next_page,
-                            prev_page=prev_page)
+                            prev_page=prev_page,
+                            date_format=date_format)
 
 def form_is_valid(method, form):
     if method == 'POST' and form.validate():
