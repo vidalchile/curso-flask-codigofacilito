@@ -10,11 +10,13 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 from flask import g
-from  config import DevelopmentConfig
+from config import DevelopmentConfig
 from models import db
 from models import User
 from models import Comment
 from helpers import date_format
+from flask_mail import Mail
+from flask_mail import Message
 import forms
 import json
 
@@ -41,10 +43,12 @@ import json
 # Uno a muchos base de datos
 # Paginación
 # Helpers
+# Servidor de Correos
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 csrf = CSRFProtect()
+mail = Mail()
 
 @app.before_request
 def before_request():
@@ -63,7 +67,7 @@ def page_not_found(e):
     return render_template('error_404.html'), 404
 
 @app.route('/')
-def index(): 
+def index():
     print(g.mi_variable_global)
 
     if 'username' in session:
@@ -156,6 +160,16 @@ def crear_usuario():
         user = User(username = username, password = password, email = email)
         db.session.add(user)
         db.session.commit()
+
+        msg = Message(
+            'Gracias por tu registro',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[user.email]
+        )
+
+        msg.html = render_template('email.html', username=user.username)
+        mail.send(msg)
+
         success_message = 'Usuario registrado en la base de datos'
         flash(success_message)
 
@@ -223,8 +237,8 @@ def form_is_valid(method, form):
 if __name__ == '__main__':
 
     csrf.init_app(app)
-    
     db.init_app(app) # Obtiene todas las conf. de la DB
+    mail.init_app(app) # obtiene todas las conf. para los email
     with app.app_context():
         db.create_all() # si existe la tabla no las creara
     
