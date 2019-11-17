@@ -38,6 +38,7 @@ import json
 # Ingresar registros en la base de datos
 # Form method override (Ejemplo: validar nombre de usuario único)
 # Uno a muchos base de datos
+# Paginación
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -158,6 +159,56 @@ def crear_usuario():
 
     titulo = 'Crear Usuario'
     return render_template('create_user.html', title=titulo, form = create_form)
+
+def obtener_cantidad_paginas(total_registros):
+    
+    registros_por_pagina = app.config['POSTS_PER_PAGE']    
+    contador_1 = 1
+    contador_2 = 1
+    suma = 0
+    cantidad_paginas = 0
+    while contador_1 <= total_registros:
+        if contador_2 == registros_por_pagina:
+            suma+=registros_por_pagina
+            cantidad_paginas += 1
+            contador_2 = 0
+        contador_1 += 1
+        contador_2 += 1
+
+    if (suma < total_registros):
+        cantidad_paginas+=1
+    
+    return cantidad_paginas
+
+@app.route('/reviews', methods=['GET', 'POST'])
+@app.route('/reviews/<int:page>')
+def comentarios(page=1):
+    titulo='Listado de comentarios'
+    
+    comentarios = Comment.query.join(User).add_columns( 
+        User.username,
+        Comment.text )
+    
+    cantidad_paginas = obtener_cantidad_paginas(comentarios.count())
+
+    comentarios_paginados = comentarios.paginate(page, app.config['POSTS_PER_PAGE'], False)
+
+    next_page = None
+    prev_page = None
+
+    if comentarios_paginados.next_num:
+        next_page = url_for('comentarios', page=comentarios_paginados.next_num)
+
+    if comentarios_paginados.prev_num:
+        prev_page = url_for('comentarios', page=comentarios_paginados.prev_num)
+
+    return render_template('comentarios.html',
+                            title=titulo, 
+                            page=page,
+                            comentarios=comentarios_paginados,
+                            cantidad_paginas=cantidad_paginas,
+                            next_page=next_page,
+                            prev_page=prev_page)
 
 def form_is_valid(method, form):
     if method == 'POST' and form.validate():

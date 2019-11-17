@@ -2,6 +2,7 @@ import os # Variables de entorno
 
 class Config(object):
     SECRET_KEY  = 'my_secret_key'
+    POSTS_PER_PAGE = 3
 
 # Clase para definir las configuraciones del entorno de desarrollo
 class DevelopmentConfig(Config):

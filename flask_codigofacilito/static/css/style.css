@@ -7,3 +7,11 @@ body {
   padding-top: 56px;
   height:100%;
 }
+
+.page_selected {
+  z-index: 2;
+  color: #0056b3;
+  text-decoration: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
