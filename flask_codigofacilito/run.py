@@ -10,6 +10,7 @@ from flask import redirect
 from flask import url_for
 from flask import flash
 from flask import g
+from flask import copy_current_request_context
 from config import DevelopmentConfig
 from models import db
 from models import User
@@ -17,6 +18,7 @@ from models import Comment
 from helpers import date_format
 from flask_mail import Mail
 from flask_mail import Message
+import threading
 import forms
 import json
 
@@ -44,6 +46,7 @@ import json
 # Paginación
 # Helpers
 # Servidor de Correos
+# Thread Email (Procesos en segundo plano)
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -148,6 +151,16 @@ def ajax_login():
     response = {'status':200, 'username':username, 'id':'1'}
     return json.dumps(response), 200
 
+def send_email(user_mail, username):
+    msg = Message(
+        'Gracias por tu registro',
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[user_mail]
+    )
+
+    msg.html = render_template('email.html', username=username)
+    mail.send(msg)
+
 @app.route('/create-user', methods=['GET', 'POST'])
 def crear_usuario():
     
@@ -161,14 +174,16 @@ def crear_usuario():
         db.session.add(user)
         db.session.commit()
 
-        msg = Message(
-            'Gracias por tu registro',
-            sender=app.config['MAIL_USERNAME'],
-            recipients=[user.email]
-        )
+        # Ejecutar procesos en segundo plano
+        @copy_current_request_context
+        def send_message(email, username):
+            send_email(email,username)
 
-        msg.html = render_template('email.html', username=user.username)
-        mail.send(msg)
+        sender = threading.Thread(
+            name='mail_sender',
+            target=send_message,
+            args=(user.email,user.username))
+        sender.start()
 
         success_message = 'Usuario registrado en la base de datos'
         flash(success_message)
